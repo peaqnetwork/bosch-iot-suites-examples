@@ -62,7 +62,7 @@ canary:
   gatewayLabels: {}
 
 service:
-  name: xdk-webapp
+  name: bosch-iot-suites-examples
   type: ClusterIP
   externalPort: 80
   internalPort: 80
