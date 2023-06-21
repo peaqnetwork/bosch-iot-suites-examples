@@ -28,13 +28,13 @@ spec:
             #  cpu: 400m
             #  memory: 512Mi
         - name: build-npm-install
-          image: node:lts-alpine
           resources: {}
         #- name: build-npm-test
          # resources: {}
         - name: check-registry
           resources: {}
         - name: build-container-build
+          image: node:lts-alpine
           resources: {}
         - name: promote-jx-preview
           resources: {}
