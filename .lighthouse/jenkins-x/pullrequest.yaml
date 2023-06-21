@@ -11,7 +11,7 @@ spec:
       taskSpec:
         metadata: {}
         stepTemplate:
-          image: uses:jenkins-x/jx3-pipeline-catalog/tasks/javascript/pullrequest.yaml@versionStream
+          image: uses:jenkins-x/jx3-pipeline-catalog/tasks/typescript/pullrequest.yaml@versionStream
           name: ""
           resources:
             # override limits for all containers here
@@ -22,15 +22,15 @@ spec:
           name: ""
           resources: {}
         - name: jx-variables
-          resources:
+          resources: {}
             # override requests for the pod here
-            requests:
-              cpu: 0.1
-              memory: 128Mi
+            #requests:
+            #  cpu: 400m
+            #  memory: 512Mi
         - name: build-npm-install
           resources: {}
-        - name: build-npm-test
-          resources: {}
+        #- name: build-npm-test
+         # resources: {}
         - name: check-registry
           resources: {}
         - name: build-container-build
