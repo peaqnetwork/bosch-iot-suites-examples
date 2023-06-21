@@ -28,6 +28,7 @@ spec:
             #  cpu: 400m
             #  memory: 512Mi
         - name: build-npm-install
+          image: node:lts-alpine
           resources: {}
         #- name: build-npm-test
          # resources: {}
