@@ -32,7 +32,6 @@ spec:
           resources: {}
           script: |
             #!/bin/sh
-            export NODE_OPTIONS=--openssl-legacy-provider
             yarn install
         #- name: build-npm-test
          # resources: {}
