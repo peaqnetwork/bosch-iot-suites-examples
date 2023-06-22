@@ -19,7 +19,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.client = mqtt.connect('ws://18.140.241.253:15675/ws')
+    this.client = mqtt.connect('wss://broker.hivemq.com:8000')
     this.client.on("connect", () => {
       console.log("connected");
       this.client.subscribe("telemetry");
