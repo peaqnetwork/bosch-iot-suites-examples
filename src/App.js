@@ -22,7 +22,7 @@ class App extends Component {
     const options = {
       host: '9c0d8d90580c45859bcc22b4fea7f6c7.s2.eu.hivemq.cloud',
       port: 8884,
-      protocol: 'mqtt',
+      protocol: 'wss',
       username: 'hivemq.webclient.1687599580158',
       password: 'F9?ks8V4%Y;5qnrX.GZf',
       rejectUnauthorized: false,
