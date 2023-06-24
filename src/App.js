@@ -19,7 +19,16 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.client = mqtt.connect('wss://broker.hivemq.com:8000')
+    const options = {
+      host: '9c0d8d90580c45859bcc22b4fea7f6c7.s2.eu.hivemq.cloud',
+      port: 8884,
+      protocol: 'mqtt',
+      username: 'hivemq.webclient.1687599580158',
+      password: 'F9?ks8V4%Y;5qnrX.GZf',
+      rejectUnauthorized: false,
+      
+  }
+    this.client = mqtt.connect(options)
     this.client.on("connect", () => {
       console.log("connected");
       this.client.subscribe("telemetry");
