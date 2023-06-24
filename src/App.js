@@ -23,12 +23,27 @@ class App extends Component {
       host: '9c0d8d90580c45859bcc22b4fea7f6c7.s2.eu.hivemq.cloud',
       port: 8883,
       protocol: 'mqtts',
-      username: 'hivemq.webclient.1687599580158',
-      password: 'F9?ks8V4%Y;5qnrX.GZf',
-      rejectUnauthorized: false,
+      // username: 'hivemq.webclient.1687599580158',
+      // password: 'F9?ks8V4%Y;5qnrX.GZf',
+      // rejectUnauthorized: false,
       
   }
-    this.client = mqtt.connect(options)
+
+  const initialConnectionOptions = {
+    // ws or wss
+    protocol: 'ws',
+    host: 'broker.hivemq.com',
+    clientId: 'emqx_react_' + Math.random().toString(16).substring(2, 8),
+    // ws -> 8083; wss -> 8084
+    port: 8884,
+    /**
+     * By default, EMQX allows clients to connect without authentication.
+     * https://docs.emqx.com/en/enterprise/v4.4/advanced/auth.html#anonymous-login
+     */
+    // username: 'emqx_test',
+    // password: 'emqx_test',
+  }
+    this.client = mqtt.connect("wss://broker.hivemq.com:8884/mqtt", {clientId: "XDK42_1"})
     this.client.on("connect", () => {
       console.log("connected");
       this.client.subscribe("telemetry");
