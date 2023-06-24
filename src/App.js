@@ -43,13 +43,14 @@ class App extends Component {
     // username: 'emqx_test',
     // password: 'emqx_test',
   }
-    this.client = mqtt.connect("wss://broker.hivemq.com:8884/mqtt", {clientId: "XDK42_1"})
+    this.client = mqtt.connect("wss://broker.hivemq.com:8884/mqtt")
     this.client.on("connect", () => {
       console.log("connected");
       this.client.subscribe("telemetry");
     });
     this.client.on('message', (topic, message) => {
       this.handleJsonMessage(JSON.parse(message.toString()));
+      console.log(JSON.parse(message.toString()));
     })
   }
 
