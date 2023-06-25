@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.5.1",
     "@material-ui/icons": "^4.5.1",
+    "@peaq-network/sdk": "^0.2.11",
     "highcharts": "^7.2.1",
     "highcharts-react-official": "^2.2.2",
     "mqtt": "^3.0.0",

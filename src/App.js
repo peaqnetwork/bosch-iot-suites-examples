@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import { Sdk } from "@peaq-network/sdk";
 
-import Content from './Content'
-import Header from './Header'
+import Content from './Content';
+import Header from './Header';
 
-import mqtt from 'mqtt'
+import mqtt from 'mqtt';
 
 const styles = theme => ({
   root: {
@@ -12,45 +13,33 @@ const styles = theme => ({
   }
 });
 
+const seed = "put impulse gadget fence humble soup mother card yard renew chat quiz";
+const name = "peaq-console";
+
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      deviceID: '',
+    }
   }
 
   componentDidMount() {
-    const options = {
-      host: '9c0d8d90580c45859bcc22b4fea7f6c7.s2.eu.hivemq.cloud',
-      port: 8883,
-      protocol: 'mqtts',
-      // username: 'hivemq.webclient.1687599580158',
-      // password: 'F9?ks8V4%Y;5qnrX.GZf',
-      // rejectUnauthorized: false,
-      
-  }
-
-  const initialConnectionOptions = {
-    // ws or wss
-    protocol: 'ws',
-    host: 'broker.hivemq.com',
-    clientId: 'emqx_react_' + Math.random().toString(16).substring(2, 8),
-    // ws -> 8083; wss -> 8084
-    port: 8884,
-    /**
-     * By default, EMQX allows clients to connect without authentication.
-     * https://docs.emqx.com/en/enterprise/v4.4/advanced/auth.html#anonymous-login
-     */
-    // username: 'emqx_test',
-    // password: 'emqx_test',
-  }
     this.client = mqtt.connect("wss://broker.hivemq.com:8884/mqtt")
     this.client.on("connect", () => {
       console.log("connected");
       this.client.subscribe("telemetry");
+      this.client.subscribe("deviceID")
     });
     this.client.on('message', (topic, message) => {
-      this.handleJsonMessage(JSON.parse(message.toString()));
-      console.log(JSON.parse(message.toString()));
+        if (topic === 'telemetry') {
+          this.handleJsonMessage(JSON.parse(message.toString()));
+          console.log(JSON.parse(message.toString()));
+        }
+        if (topic === 'deviceID') {
+          this.setState({ deviceID: message.toString() })
+          this.handleDid();
+        }
     })
   }
 
@@ -66,12 +55,27 @@ class App extends Component {
     pressures.push([time, json.pressure || 0])
     this.setState({
       data: { ...json },
+      deviceID: json.deviceID,
       temperatures,
       humidities,
       pressures,
       lights
     })
   }
+
+  handleDid = async () => {
+    const sdkInstance = await Sdk.createInstance({ baseUrl: "wss://wsspc1-qa.agung.peaq.network", seed });
+    const didRead = await sdkInstance.did.read({ name, address: this.state.deviceID });
+    if (!didRead) {
+      const did = await sdkInstance.did.create({ name, address: this.state.deviceID });
+      did.unsubscribe();
+    }
+    sdkInstance.disconnect();
+  };
+
+  storeDataOnChain = async () => {
+
+  };
 
   componentWillUnmount() {
     if (this.client) {
