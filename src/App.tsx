@@ -18,7 +18,6 @@ import { networks } from "./constants";
 import { toast } from "react-toastify";
 import pkg from "peaq-did-proto-js";
 import { hexToU8a } from "@polkadot/util";
-import { SubmittableExtrinsic } from "@polkadot/api/types";
 const { Document } = pkg;
 
 const styles = (theme: any) => ({
@@ -26,7 +25,6 @@ const styles = (theme: any) => ({
     flexGrow: 1,
   },
 });
-
 
 const seed =
   "put impulse gadget fence humble soup mother card yard renew chat quiz";
@@ -37,36 +35,32 @@ const sendTransaction = async (extrinsic: any, type: "did" | "storage") => {
     getPeaqKeyPair(),
     { nonce: -1 },
     (result: any) => {
-      console.log(
-        "===await SUB_API.tx.peaqDid.addAttribute==result===",
-        result
-      );
-
-        toast.info(<>
-          Success! Click
-          <a
-            href={`https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fwsspc1-qa.agung.peaq.network#/extrinsics/decode/${extrinsic.toHex()}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {" "}here{" "}
-          </a>
-          to see {type} transaction
-        </>, {
-          // 25 seconds
-          autoClose: 5000,
-          toastId: type,
-        });
+      console.log(`Current status is ${result.status}`);
     }
   );
-  console.log("===await SUB_API.tx.peaqDid.addAttribute==hash===", hash);
+  toast.info(
+    <>
+      Success! Click
+      <a
+        href={`https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fwsspc1-qa.agung.peaq.network#/extrinsics/decode/${extrinsic.toHex()}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {" "}
+        here{" "}
+      </a>
+      to see {type} transaction
+    </>,
+    {
+      // 25 seconds
+      autoClose: 10000,
+    }
+  );
+  console.log("txhash", hash);
   return hash;
-}
+};
 
-const callDIDPallet = async (
-  didDocumentHash: any,
-  address: string
-) => {
+const callDIDPallet = async (didDocumentHash: any, address: string) => {
   try {
     const api = await getNetworkApi(networks.PEAQ);
 
@@ -79,26 +73,27 @@ const callDIDPallet = async (
 
     const hash = sendTransaction(extrinsic, "did");
     return hash;
-
   } catch (error) {
-    console.log("===await SUB_API.tx.peaqDid.addAttribute==error===", error);
+    console.log("Error storing DID on chain", error);
   }
 };
 
-export const callStoragePallet = async (itemType: string, value: string, action: "addItem" | "updateItem") => {
+export const callStoragePallet = async (
+  itemType: string,
+  value: string,
+  action: "addItem" | "updateItem"
+) => {
   try {
     const api = await getNetworkApi(networks.PEAQ);
 
-    
     const extrinsic = api.tx.peaqStorage[action](itemType, value);
 
     const hash = sendTransaction(extrinsic, "storage");
     return hash;
-
   } catch (error) {
-    console.log("===await SUB_API.tx.peaqStorage.addItem==error===", error);
+    console.error("Error storing data on chain", error);
   }
-}
+};
 
 export const getDIDDocument = async (address: string) => {
   await cryptoWaitReady();
@@ -168,8 +163,8 @@ class App extends Component<
         console.log("telemetry", message.toString());
         this.handleJsonMessage(JSON.parse(message.toString()));
       }
-      console.log("topic", topic);
-      
+      console.log("topic", topic, message.toString());
+
       if (topic === "deviceID") {
         const data = JSON.parse(message.toString());
         console.log("deviceID", data);
@@ -208,7 +203,13 @@ class App extends Component<
     });
 
     this.setState({
-      data: { temperature, humidity, lux, pressure, deviceID: json.deviceID || state.deviceID, },
+      data: {
+        temperature,
+        humidity,
+        lux,
+        pressure,
+        deviceID: json.deviceID || state.deviceID,
+      },
       temperatures,
       humidities,
       pressures,
@@ -273,22 +274,28 @@ class App extends Component<
     await cryptoWaitReady();
     const checkData: any = await getStorage(`xdk-${deviceID}`);
     if (checkData) {
-       const updateData = callStoragePallet(`xdk-${deviceID}`, JSON.stringify(data), "updateItem"); 
-        toast.promise(updateData, {
-          pending: "Updating device data on chain...",
-          success: "Device data updated on chain",
-          error: "Error updating device data on chain",
-        });
+      const updateData = callStoragePallet(
+        `xdk-${deviceID}`,
+        JSON.stringify(data),
+        "updateItem"
+      );
+      toast.promise(updateData, {
+        pending: "Updating device data on chain...",
+        success: "Device data updated on chain",
+        error: "Error updating device data on chain",
+      });
     } else {
-      const addData = callStoragePallet(`xdk-${deviceID}`, JSON.stringify(data), "addItem"); 
+      const addData = callStoragePallet(
+        `xdk-${deviceID}`,
+        JSON.stringify(data),
+        "addItem"
+      );
       toast.promise(addData, {
         pending: "Storing device data on chain...",
         success: "Device data stored on chain",
         error: "Error storing device data on chain",
       });
     }
-
-
   };
 
   componentWillUnmount() {

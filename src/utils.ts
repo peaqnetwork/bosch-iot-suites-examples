@@ -52,7 +52,7 @@ export const makePalletQuery = async (
 };
 
 export const createStorageKeys = (args: any) => {
-  console.log("args", args);
+  // console.log("args", args);
   // decode address to byte array
   const keysByteArray = [];
   for (let i = 0; i < args.length; i++) {
