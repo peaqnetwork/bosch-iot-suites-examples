@@ -159,15 +159,13 @@ class App extends Component<
       this.client.subscribe("deviceID");
     });
     this.client.on("message", (topic: any, message: string) => {
+      console.log("topic", topic, message.toString());
       if (topic === "peaqtelemetry") {
-        console.log("telemetry", message.toString());
         this.handleJsonMessage(JSON.parse(message.toString()));
       }
-      console.log("topic", topic, message.toString());
 
       if (topic === "deviceID") {
         const data = JSON.parse(message.toString());
-        console.log("deviceID", data);
 
         this.setState({
           data: { ...this.state.data, deviceID: data?.deviceID },
