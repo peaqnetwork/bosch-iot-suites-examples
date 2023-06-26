@@ -15,6 +15,9 @@ import Button from '@material-ui/core/Button';
 import Logo from './logo.png';
 
 const styles = (theme:any) => ({
+  header: {
+    backgroundColor: "black",
+  },
   menuButton: {
     marginRight: theme.spacing(1),
   },
@@ -23,7 +26,8 @@ const styles = (theme:any) => ({
 
   },
   chip: {
-    width: 120,
+    minWidth: 120,
+    width: "fit-content",
     display: "flex",
     justifyContent: "space-between",
     margin: 2
@@ -75,22 +79,25 @@ class Header extends Component {
     const buttonText = lightStatus === 1 ? "Light OFF" : "Light ON";
     
     return (
-      <AppBar>
+      <AppBar className={classes.header}>
         <Toolbar>
-          <IconButton href="http://justindannguyen.com" edge="start" className={classes.menuButton}>
+          <IconButton href="https://www.peaq.network" edge="start" target='_blank' className={classes.menuButton}>
             <img alt='Logo' src={Logo} style={{ width: 40 }} />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             Bosch XDK
           </Typography>
+          {/* Show Device Id separately from other data from "data.deviceId" */}
+          <Chip className={classes.chip} avatar={<Avatar>Id</Avatar>} label={data.deviceID} />
+          
           <Chip className={classes.chip} avatar={<Avatar>°C</Avatar>} label={data.temperature} />
           <Chip className={classes.chip} avatar={<Avatar>Rh%</Avatar>} label={data.humidity} />
           <Chip className={classes.chip} avatar={<Avatar>Pa</Avatar>} label={data.pressure} />
           <Chip className={classes.chip} avatar={<Avatar>Lx</Avatar>} label={data.lux} />
-          <WbIncandescentOutlinedIcon className={classes.lightStatus} color={lightColor} />
+          {/* <WbIncandescentOutlinedIcon className={classes.lightStatus} color={lightColor} />
           <Button onClick={this.onButtonClick} variant="contained" color="secondary">
             {buttonText}
-          </Button>
+          </Button> */}
         </Toolbar>
       </AppBar>
     )

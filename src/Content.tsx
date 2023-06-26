@@ -8,7 +8,8 @@ import { Chart } from './Chart'
 
 const styles = (theme: any) => ({
   content: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginTop: 100
   }
 });
 
