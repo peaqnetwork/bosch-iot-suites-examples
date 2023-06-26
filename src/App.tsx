@@ -30,10 +30,10 @@ const seed =
   "put impulse gadget fence humble soup mother card yard renew chat quiz";
 const name = "bosch-peaq";
 
-const sendTransaction = async (extrinsic: any, type: "did" | "storage") => {
+const sendTransaction = async (extrinsic: any, type: "did" | "storage", nonce: any) => {
   const hash = await extrinsic.signAndSend(
     getPeaqKeyPair(),
-    { nonce: -1 },
+    { nonce },
     (result: any) => {
       console.log(`Current status is ${result.status}`);
     }
@@ -64,6 +64,10 @@ const callDIDPallet = async (didDocumentHash: any, address: string) => {
   try {
     const api = await getNetworkApi(networks.PEAQ);
 
+    const onChainNonce: any = (
+      await api.rpc.system.accountNextIndex(getPeaqKeyPair().address)
+    ).toBn();
+
     const extrinsic = api.tx.peaqDid.addAttribute(
       address,
       name,
@@ -71,7 +75,7 @@ const callDIDPallet = async (didDocumentHash: any, address: string) => {
       ""
     );
 
-    const hash = sendTransaction(extrinsic, "did");
+    const hash = sendTransaction(extrinsic, "did", onChainNonce);
     return hash;
   } catch (error) {
     console.log("Error storing DID on chain", error);
@@ -86,9 +90,13 @@ export const callStoragePallet = async (
   try {
     const api = await getNetworkApi(networks.PEAQ);
 
+    const onChainNonce: any = (
+      await api.rpc.system.accountNextIndex(getPeaqKeyPair().address)
+    ).toBn();
+
     const extrinsic = api.tx.peaqStorage[action](itemType, value);
 
-    const hash = sendTransaction(extrinsic, "storage");
+    const hash = sendTransaction(extrinsic, "storage", onChainNonce);
     return hash;
   } catch (error) {
     console.error("Error storing data on chain", error);
@@ -220,7 +228,7 @@ class App extends Component<
       const now = Date.now();
       const diff = now - +this.state.timeStamps?.didCheck;
       // Check if 1 minute has passed
-      if (diff < 60000) {
+      if (diff < 120000) {
         // toast.info('DID already checked');
         return;
       }
