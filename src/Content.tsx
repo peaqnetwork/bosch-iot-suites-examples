@@ -6,13 +6,13 @@ import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import { Chart } from './Chart'
 
-const styles = theme => ({
+const styles = (theme: any) => ({
   content: {
     flexGrow: 1
   }
 });
 
-export const Content = props => {
+export const Content = (props: any) => {
   const { classes } = props
   return (
     <div className={classes.content}>

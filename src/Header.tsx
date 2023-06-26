@@ -14,7 +14,7 @@ import WbIncandescentOutlinedIcon from '@material-ui/icons/WbIncandescentOutline
 import Button from '@material-ui/core/Button';
 import Logo from './logo.png';
 
-const styles = theme => ({
+const styles = (theme:any) => ({
   menuButton: {
     marginRight: theme.spacing(1),
   },
@@ -23,7 +23,9 @@ const styles = theme => ({
 
   },
   chip: {
-    width: 80,
+    width: 120,
+    display: "flex",
+    justifyContent: "space-between",
     margin: 2
   },
   lightStatus: {
@@ -36,7 +38,7 @@ const styles = theme => ({
 
 
 class Header extends Component {
-  constructor(props) {
+  constructor(props:any) {
     super(props)
     this.state = {}
   }
@@ -55,7 +57,7 @@ class Header extends Component {
   }
 
   componentDidUpdate() {
-    const { lux, lightStatus } = this.props.data
+    const { lux, lightStatus } = (this.props as any).data;
 
     if (lux <= 10 && lightStatus === 0) {
       // Light is off and too dark
@@ -67,10 +69,11 @@ class Header extends Component {
   }
 
   render() {
-    const { classes, data } = this.props
+    const { classes, data } = this.props as any
     const { lightStatus } = data;
     const lightColor = lightStatus === 1 ? "secondary" : "disabled";
     const buttonText = lightStatus === 1 ? "Light OFF" : "Light ON";
+    
     return (
       <AppBar>
         <Toolbar>
