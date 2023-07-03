@@ -5,6 +5,12 @@ import { u8aConcat, u8aToU8a } from "@polkadot/util";
 import { blake2AsHex } from "@polkadot/util-crypto";
 import { KeyringPair } from "@polkadot/keyring/types";
 
+declare global {
+  interface Window {
+    PEAQ: ApiPromise;
+  }
+}
+
 let peaqKeyPair: any = null;
 const peaqMnemonic = PEAQ_MNEMONIC;
 
@@ -23,12 +29,12 @@ export const getPeaqKeyPair = (): KeyringPair => {
 
 export const getNetworkApi = async (network: any) => {
   try {
-    // if (global[network.name]) return global[network.name];
+    if (window.PEAQ) return window.PEAQ;
     const api = new ApiPromise({
       provider: new WsProvider(network.ws),
     });
     await api.isReadyOrError;
-    // global[network.name] = api;
+    window.PEAQ = api;
     return api;
   } catch (error) {
     console.error("getNetworkApi error", error);
