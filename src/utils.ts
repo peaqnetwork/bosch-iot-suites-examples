@@ -50,7 +50,7 @@ export const makePalletQuery = async (
     try {
       const api = await getNetworkApi(networks.PEAQ);
       const data = await api.query[palletName][storeName](...args);
-      api.disconnect();
+      // api.disconnect();
       return data.toHuman();
     } catch (error) {
       console.error(`Error ${makePalletQuery.name} - `, error);
